@@ -1,0 +1,80 @@
+#chat2 .form-control {
+border-color: transparent;
+}
+
+#chat2 .form-control:focus {
+border-color: transparent;
+box-shadow: inset 0px 0px 0px 1px transparent;
+}
+
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+
+.rounded {
+  height: 30px;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.in1 {
+  width: 120px;
+}
+
+.in2 {
+  width: 350px;
+}
+
+i {
+  margin: 0 8px;
+}
+
+.filename-container {
+  margin: 20px 20px 0 0;
+}
+
+.filename {
+  display: inline-block;
+  padding: 0 10px;
+  margin-right: 10px;
+  background-color: #ccc;
+  border: 1px solid black;
+  border-radius: 15px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 12px;
+  font-family: 'verdana', sans-serif;
+}
+
+.hide {
+  display: none;
+}
+
+#chat-submit {
+  background: deepskyblue;
+  color: #FFF;
+  width: 17%;
+  border-radius: 4px;
+  padding: 0.8em;
+  margin: 0 1em;
+  border: none;
+  cursor: pointer;
+  appearance: none;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
