@@ -5,16 +5,12 @@ import router from './routes/upload'
 dotenv.config();
 // const logger = require('./logs');
 // const { Server } = require('socket.io');
-// const { OpenAI } = require('openai');
 
 const app: Express = express();
 const port = process.env.PORT;
 // app.use(logger({ level: 'INFO' }));
 
 // dotenv.config();
-// const openai = new OpenAI({
-//   apiKey: process.env["OPENAI_API_KEY"]
-// });
 
 // const server = http.createServer(app);
 

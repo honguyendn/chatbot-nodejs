@@ -1,0 +1,224 @@
+Okay, hello, Cloud Gurus,
+and welcome to this lecture.
+This lecture is on CloudWatch and this is a lab,
+so you will need to log into the AWS console.
+Okay, so here I am in the AWS console.
+If I go over to "Services," I'll be able to go to EC2.
+I'm going to provision a new EC2 instance.
+I do have some EC2 instances running from the last one
+that I forgot to shut down,
+so I'm just going to quickly go in and terminate them.
+You should do the same if you haven't already.
+It just makes it easier
+so that we don't get our EC2 instances confused
+for this lab.
+So that's going through and terminating now,
+and then what I'm going to do is I'm going to go ahead
+and launch a new instance.
+Okay, so we're going to be using an Amazon Linux 2 AMI
+and we're going to use a t2.micro,
+and then what we want to do is we want to go down here,
+and we want to go to "Monitoring,"
+and we want to enable "CloudWatch detailed monitoring."
+So we want to monitor our EC2 instances
+at one-minute intervals.
+Now this will take you outside of Free Tier,
+so just bear that in mind,
+it will cost you some money.
+So it's optional whether or not you do it.
+You can just watch me
+or you could just use standard monitoring
+and just be a little bit more patient.
+But I'm going to turn detailed monitoring on.
+Next I'm going to go ahead and add my storage.
+I'm just going to use the standard eight gigs.
+I'm going to give this a name,
+I'm just going to call it
+"CloudWatchEC2Detailed,"
+something like that,
+so I know it's got detailed monitoring turned on.
+I'm going to go and add my security groups.
+I'm going to add it to an existing security group.
+I'm going to go ahead and hit "Review" and "Launch,"
+and I'm going to go ahead and launch my EC2 instance.
+So that is now launching.
+Go and view my instance, we can see it in here.
+So it's t2.micro launching into us-east-1b.
+I've already been provisioned a public IP address.
+I'm going to copy that to my clipboard,
+and I'm going to go in and SSH into that in a second.
+I'm going to pause the video
+and just wait for this to come up, however.
+Okay, so that EC2 instance is now live,
+and if we click on "Status Checks"
+we'll be able to see our system status check
+and our instant status check,
+and both have passed.
+And if we click on "Monitoring,"
+we'll be able to see things like basically
+our host-level metrics,
+so our CPU, our disk, our network,
+and then also our status checks.
+Note here, we can't see anything else.
+We can't see things like RAM utilization
+or how much disk storage space is left.
+If we wanted to do something like that,
+we would need a custom metric,
+and we cover off how to do that
+in the Certified SysOps Administrator Associate course.
+But what we're going to do now
+is we're going to log into this EC2 instance,
+and we're going to max out the CPU.
+Before we do that though,
+let's set up an alert so that we can get an email
+if our CPU utilization is going above a certain percentage.
+So to set up an alert, we need to go into CloudWatch,
+and CloudWatch is under "Management and Governance."
+If we click in here,
+we'll be able to see our CloudWatch overview,
+and what we want to do is we want to go over to "Alarms,"
+and we're going to go ahead and create an alarm.
+And in here we're going to select our metric.
+And down here are our metrics,
+so we're going to over to EC2,
+and then we're going to do this on a per-instance metric,
+so click in there.
+Now, hopefully you remember your instance ID,
+I know that mine ends in 013,
+so this is the one that I want.
+If you have got other EC2 instances
+that you've gone through and terminated, for example,
+you will see them in here.
+But I'm just going after this instance ID
+that ends in 013.
+And then what I want is CPU utilization,
+so if I scroll down I can see it in here,
+so I'm going to click in there,
+and I'm going to go ahead and hit "Select Metric."
+And then my name in here, I'm just going to click in here,
+and I'm going to type
+"CPUUtilization-90%"
+something like that.
+So this is basically saying that as soon
+as my CPU utilization goes over 90%,
+it's going to send me an alarm.
+And so whenever CPU utilization
+is greater than or equal to, we'll just put 90,
+for one out of how many data points.
+So because this is one-minute intervals,
+it's saying for one minute out of one minute,
+so if my CPU utilization goes greater than 90%
+for one minute out of a minute,
+then it will send me an alarm.
+You can actually edit this,
+so you can say two minutes out of five,
+or you could say for three minutes out of 10 or whatever.
+I'm just going to leave as one out of one.
+And then I'm going to scroll down,
+and it says whenever this alarm state is "ALARM"
+"Send a notification to:."
+And we can go ahead and do a new list, so click in there.
+And then all you want to do
+is enter your email address in there,
+which I'm going to go ahead and do now.
+Once you've done that, go ahead and hit "Create Alarm,"
+and you will have to give this a name,
+so just call it "CPU," something like that,
+and go ahead and hit "Create Alarm."
+And that will ask you to confirm your email address.
+I've gone ahead and just confirmed that,
+I'm going to go back to CloudWatch.
+That's ready to go, and we can go ahead and view our alarm.
+Right now there's insufficient data
+because we're not using this EC2 instance,
+so let's go back over to EC2.
+I'm going to grab my public IP address
+and I'm going to go ahead and SSH into this instance.
+Okay, so here I am in my SSH terminal,
+just going to type in "ssh ec2-user," and then "@,"
+and then "-i," and then the name of my key pair.
+And I'm going to connect in,
+and then I'm just going to elevate my privileges to root.
+I'm going to clear the screen,
+and then all we're going to do
+is we're going to type "while true; do echo;"
+and then "done."
+And this will basically put our EC2 instance
+into an infinite loop,
+and that's going to max out the CPU.
+So you won't see anything,
+you'll just see this little bright blue flashing thing here.
+But hopefully in a minute or two,
+you should get an email saying that your CloudWatch,
+that your EC2 instance is in a state of an alarm.
+So I'm just going to pause the video and wait.
+Okay, and we can see here I've got my alarm CPU utilization,
+so it has triggered my alarm,
+and it's basically sent me an email notification saying
+"Hey, your EC2 instance has gone above 90% CPU
+"for longer than a minute."
+I'm back in the AWS console.
+If I just click on "Monitoring,"
+I'll be able to see down here
+my CPU utilization has hit 100%,
+and that will basically flatline out
+if I continue to let this run.
+So let's go back over to CloudWatch,
+we can find it under "Management and Governance,"
+and I'm just going to show you a couple more things.
+So we set up an alarm,
+we can see that that alarm has now been triggered.
+In here we've got our dashboards,
+so we can create dashboards,
+and we can create a dashboard
+to show us either this region or another region,
+we could look at our entire global overview.
+Again, I'm not really going to go into that,
+that's more of a SysOps Administrator Associate thing,
+but going into the exam,
+just be aware you can create dashboards,
+and your dashboards can be global as well as regional.
+We've also got in here "Logs."
+So in our logs, this allows us
+to do performance logging essentially,
+so you can send all your logs to CloudWatch.
+And then in here we've got "Events."
+So CloudWatch Events basically delivers
+a near-real-time stream of system events
+that describe changes in AWS resources.
+You can go in there and set up some events if you want.
+But again, that's beyond the scope
+of the Solutions Architect course.
+We do that in the Certified SysOps
+Administrator Associate course.
+So, let's have a look at my exam tips.
+So just remember going into your exam
+that standard monitoring is five minutes,
+detailed monitoring is one minute.
+Remember what you can do with CloudWatch.
+So, just like we just saw, you can create awesome dashboards
+and see what's happening with your AWS environment.
+You can also go in and create alarms,
+and this will give you notifications
+when a certain threshold is met.
+We can also go in and configure events,
+and this helps you respond to state changes
+in your AWS resources.
+And then we also have logs,
+and CloudWatch Logs allows you to aggregate, monitor,
+and store your log data.
+Also remember, when we're dealing with CloudTrail
+and CloudWatch, Amazon like to try
+and confuse you between the two.
+So CloudWatch always monitors performance,
+whereas CloudTrail monitors API calls
+within the AWS platform.
+So again, if the question's asking you about
+you want to be able to see who set up an S3 bucket,
+or who provisioned an EC2 instance,
+that's going to be CloudTrail.
+If you want to monitor the performance of an EC2 instance,
+that's going to be CloudWatch.
+So that is it for this lecture, guys,
+If you have any questions, please let me know,
+if not, feel free to move on to the next lecture, thank you.

@@ -1,14 +1,10 @@
 import multer from 'multer';
-import path from 'path'
-
-const uploadFilePath = path.resolve(__dirname, '../..', 'public/uploads');
 
 const storage = multer.diskStorage({
-  destination: uploadFilePath,
+  destination: './uploads',
   filename: function (req: any, file: any, cb: any) {
-    cb(null, file.originalname)
+    cb(null, file.originalname + '-' + Date.now())
   }
 });
-const upload = multer({ storage: storage});
 
-export { upload }
+export const upload = multer({ storage: storage });
