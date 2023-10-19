@@ -1,33 +1,53 @@
-import openaiService from '../utils/openai'
-import redis from '../utils/redis'
+import { openai, embeddings } from '../utils/openai'
+import redisClient from '../utils/redis'
+import { Document } from 'langchain/document';
+import { RedisVectorStore } from "langchain/vectorstores/redis";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import fs from 'fs'
+import chatOperation from './chatOperation';
 
-class ChatOperation {
+class uploadOperation {
   private path: string
+  private docs: any
 
   constructor(path: string) {
     this.path = path
   }
 
   call() {
-    this.readFile();
+    this.stepReadFile();
   }
 
-  private async readFile() {
+  private async stepReadFile() {
     try {
       const data = fs.readFileSync(this.path || '', 'utf8');
       const lines = data.split('\n');
       const paragraph = lines.join(' ').trim().replace(/\s+/g, ' ');
-      const chunks = this.chunkData(paragraph, 500);
-      const embedding = new openaiService(chunks);
-      const embeddingData = embedding.createEmbedding();
-      let i = 0;
-      while (i < (await embeddingData).data.length) {
-        this.saveData((await embeddingData).data[i]['embedding'])
-      }
-      console.log(data);
+      const splitter = new RecursiveCharacterTextSplitter({
+        chunkSize: 500,
+        chunkOverlap: 1,
+      });
+
+      const docOutput = await splitter.splitDocuments([
+        new Document({ pageContent: paragraph }),
+      ]);
+
+      await RedisVectorStore.fromDocuments(
+        docOutput,
+        embeddings,
+        {
+          redisClient: redisClient,
+          indexName: "docs",
+        }
+      );
+      const answer = new chatOperation('Xin chào');
+      answer.call();
+      // await redis.disconnect();
+      // const chain = RetrievalQAChain.fromLLM(openai, vectorStore.asRetriever(1), { returnSourceDocuments: true });
+      // const chainRes = await chain.call({ query: "CloudTrail?" });
+      // console.log(chainRes);
     } catch (error) {
-      console.error('Error reading file' + error)
+      console.error(error)
     }
   }
 
@@ -41,12 +61,6 @@ class ChatOperation {
     return chunks;
   }
 
-  private async saveData(document: any) {
-    const statusRedis = redis.isOpen
-    await redis.set('embaddings', JSON.stringify(document))
-    console.log(statusRedis)
-  }
-
 }
 
-export default ChatOperation
+export default uploadOperation
