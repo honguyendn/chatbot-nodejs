@@ -1,4 +1,5 @@
 import { createClient } from 'redis';
+require('dotenv').config();
 
 const client = createClient();
 
