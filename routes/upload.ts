@@ -4,6 +4,6 @@ import { upload } from '../app/utils/upload';
 
 const router = Router();
 
-router.post("/upload", upload.single("file-input"), ChatController.upload)
+router.post("/upload", upload.single("files"), ChatController.upload)
 
 export default router
